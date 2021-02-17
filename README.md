@@ -1,2 +1,5 @@
 # Team-H-Discord-Bot
-# Salut
+
+## Set up your Toke.txt as the following:
+deliminator-Example: :: or ;;
+Discord Bot Token
