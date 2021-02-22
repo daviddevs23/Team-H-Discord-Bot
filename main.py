@@ -6,18 +6,29 @@ def get_token(index):
         lines = f.readlines()
         return lines[index].strip()
 
+client = discord.Client()
 
-class ShunnedBot(discord.Client):
-    # Asynchronous __init__ method
-    async def on_ready(self):
-        self.deliminator = get_token(0)
-        print(self.deliminator)
-        print("Bot has been initiated")
+TOKEN = get_token(1)
+DELIMIN = get_token(0)
 
-    async def on_message(self, message):
-        if message.content.find(self.deliminator) == 0:
-            await message.channel.send(message.content.replace("::", ""))
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
 
-if __name__ == "__main__":
-    client = ShunnedBot()
-    client.run(get_token(1))
+    if message.content.startswith(f'{DELIMIN}hello'):
+        await message.channel.send('Hello!')
+
+    elif message.content.startswith(f'{DELIMIN}test'):
+        await message.channel.send('TEST TEST TEST')
+    
+    elif message.content.startswith(f'{DELIMIN}test2'):
+        await message.channel.send('TEST2 TEST2 TEST2')
+
+    ## Add commands here
+
+@client.event
+async def on_member_join(member):
+    await member.send('Private message')
+
+client.run(TOKEN)
