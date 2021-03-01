@@ -55,7 +55,32 @@ class Admin(commands.Cog):
 
     # Unban a member
     @commands.command()
-    async def unban(self):
-        pass
+    async def unban(self, ctx, *, member=None):
+        # Check if the person sending the command is an admin
+        if ctx.author.guild_permissions.administrator:
 
+            # Make sure a member was actually passed in
+            if member != None:
+                banned_members = await ctx.guild.bans()
+                member_name, member_id = member.split("#")
+
+                unbanned = False
+
+                for member in banned_members:
+                    user = member.user
+
+                    if (user.name, user.discriminator) == (member_name, member_id):
+                        unbanned = True
+
+                        await ctx.guild.unban(user)
+                        await ctx.send(f"Unbanned {user.name}#{user.discriminator}")
+
+                if not unbanned:
+                    ctx.send(f"Unable to find member to unban")
+
+            else:
+                await ctx.send("Please provide a member to unban")
+
+        else:
+            await ctx.send(f"Sorry, you are not an admin {ctx.author}")
 
