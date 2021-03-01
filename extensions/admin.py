@@ -84,3 +84,13 @@ class Admin(commands.Cog):
         else:
             await ctx.send(f"Sorry, you are not an admin {ctx.author}")
 
+    # Simple clear messages utility
+    @commands.command()
+    async def clear(self, ctx, num_messages=10):
+        # Make sure person calling command is an admin
+        if ctx.author.guild_permissions.administrator:
+            await ctx.channel.purge(limit=num_messages)
+
+        else:
+            await ctx.send("Sorry, you are not an administrator")
+
