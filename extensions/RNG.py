@@ -103,11 +103,11 @@ class RNG(commands.Cog):
     # Plays tic-tac-toe
     @commands.command()
     async def ttt(self, ctx, x=None, y=None):
-        tttarr = [["n","n","n"],["n","n","n"],["n","n","n"]]
+        tttarr = [["-","-","-"],["-","-","-"],["-","-","-"]]
         if x == None:
             await ctx.send("The tic tac toe command needs an argument after it, \"Restart\" to start or restart a game")
             return
-        elif x == "Restart":
+        elif x == "Restart" or x == "restart" or x == "Start" or x == "start":
             with open("tictactoe.txt", "wb") as f:
                 pickle.dump(tttarr, f)
             await ctx.send("Reset game.")
@@ -121,7 +121,7 @@ class RNG(commands.Cog):
                 posy = int(x)
                 with open("tictactoe.txt", "rb") as f:
                     tttarr = pickle.load(f)
-                if tttarr[posx][posy] != "n":
+                if tttarr[posx][posy] != "-":
                     await ctx.send("There is already an X or O at that position.")
                     return
                 else:
@@ -130,11 +130,11 @@ class RNG(commands.Cog):
                         await ctx.send("You win!")
                         os.remove("tictactoe.txt")
                         for row in range(3):
-                            await ctx.send(tttarr[row][0] + " " + tttarr[row][1] + " " + tttarr[row][2])
+                            await ctx.send(tttarr[row][0] + "  " + tttarr[row][1] + "  " + tttarr[row][2])
                         return
                     compx = 0
                     compy = 0
-                    while tttarr[compx][compy] != "n":
+                    while tttarr[compx][compy] != "-":
                         compx = randomnumgen(3)
                         compy = randomnumgen(3)
                     tttarr[compx][compy] = "O"
@@ -142,12 +142,12 @@ class RNG(commands.Cog):
                         await ctx.send("I win!")
                         os.remove("tictactoe.txt")
                         for row in range(3):
-                            await ctx.send(tttarr[row][0] + " " + tttarr[row][1] + " " + tttarr[row][2])
+                            await ctx.send(tttarr[row][0] + "  " + tttarr[row][1] + "  " + tttarr[row][2])
                         return
                     with open("tictactoe.txt", "wb") as f:
                         pickle.dump(tttarr, f)
                     for row in range(3):
-                        await ctx.send(tttarr[row][0]+" "+tttarr[row][1]+" "+tttarr[row][2])
+                        await ctx.send(tttarr[row][0]+"  "+tttarr[row][1]+"  "+tttarr[row][2])
                     return
             await ctx.send("The tic tac toe command needs an argument after it of the form \"0 1\"")
             return
