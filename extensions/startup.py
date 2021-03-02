@@ -10,6 +10,11 @@ class Startup(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        # Set Bot Status
+        # Someone can change the status if they wish
+        await self.client.change_presence(status=discord.Status.online, 
+                activity=discord.Game("Coding and Stuffs"))
+
         print("Bot has initialized")
 
     # Just and example of a cog based command
