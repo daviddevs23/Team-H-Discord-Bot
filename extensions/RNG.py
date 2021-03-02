@@ -1,5 +1,7 @@
 import discord
 import random
+import pickle
+import os
 from discord.ext import commands
 from math import floor
 
@@ -17,6 +19,27 @@ def rpsswitch(choice):
         2: "Scissors",
     }
     return rpsswitcher.get(choice, "null")
+
+
+# TicTacToe command needs some more error checking
+# Command for checking if tttarr has a player that won
+def check_tictactoe(tttarr):
+    if tttarr[0][0] == "X" and tttarr[1][1] == "X" and tttarr[2][2] == "X":
+        return 1
+    elif tttarr[0][0] == "O" and tttarr[1][1] == "O" and tttarr[2][2] == "O":
+        return 1
+    j = 0
+    while j < 3:
+        if tttarr[j][0] == "X" and tttarr[j][1] == "X" and tttarr[j][2] == "X":
+            return 1
+        elif tttarr[j][0] == "O" and tttarr[j][1] == "O" and tttarr[j][2] == "O":
+            return 1
+        elif tttarr[0][j] == "X" and tttarr[1][j] == "X" and tttarr[2][j] == "X":
+            return 1
+        elif tttarr[0][j] == "O" and tttarr[1][j] == "O" and tttarr[2][j] == "O":
+            return 1
+        j = j + 1
+    return 0
 
 
 # RNG commands test class
@@ -76,3 +99,55 @@ class RNG(commands.Cog):
                 return
         if z == 5:
             await ctx.send("The RPSgame command is for Rock, Paper, Scissors. It requires one of those words after it.")
+
+    # Plays tic-tac-toe
+    @commands.command()
+    async def ttt(self, ctx, x=None, y=None):
+        tttarr = [["n","n","n"],["n","n","n"],["n","n","n"]]
+        if x == None:
+            await ctx.send("The tic tac toe command needs an argument after it, \"Restart\" to start or restart a game")
+            return
+        elif x == "Restart":
+            with open("tictactoe.txt", "wb") as f:
+                pickle.dump(tttarr, f)
+            await ctx.send("Reset game.")
+            return
+        elif not os.path.exists("tictactoe.txt"):
+            await ctx.send("You must \"Restart\" the game first to play.")
+            return
+        else:
+            if x.isdigit() and y.isdigit() and 3 > int(x) >= 0 and 3 > int(y) >= 0:
+                posx = int(y)
+                posy = int(x)
+                with open("tictactoe.txt", "rb") as f:
+                    tttarr = pickle.load(f)
+                if tttarr[posx][posy] != "n":
+                    await ctx.send("There is already an X or O at that position.")
+                    return
+                else:
+                    tttarr[posx][posy] = "X"
+                    if check_tictactoe(tttarr) == 1:
+                        await ctx.send("You win!")
+                        os.remove("tictactoe.txt")
+                        for row in range(3):
+                            await ctx.send(tttarr[row][0] + " " + tttarr[row][1] + " " + tttarr[row][2])
+                        return
+                    compx = 0
+                    compy = 0
+                    while tttarr[compx][compy] != "n":
+                        compx = randomnumgen(3)
+                        compy = randomnumgen(3)
+                    tttarr[compx][compy] = "O"
+                    if check_tictactoe(tttarr) == 1:
+                        await ctx.send("I win!")
+                        os.remove("tictactoe.txt")
+                        for row in range(3):
+                            await ctx.send(tttarr[row][0] + " " + tttarr[row][1] + " " + tttarr[row][2])
+                        return
+                    with open("tictactoe.txt", "wb") as f:
+                        pickle.dump(tttarr, f)
+                    for row in range(3):
+                        await ctx.send(tttarr[row][0]+" "+tttarr[row][1]+" "+tttarr[row][2])
+                    return
+            await ctx.send("The tic tac toe command needs an argument after it of the form \"0 1\"")
+            return
