@@ -6,6 +6,7 @@ from extensions.startup import Startup
 from extensions.RNG import RNG
 from extensions.admin import Admin
 from extensions.meme import Meme
+from extensions.dad import Dad
 
 # Command for parcing token.txt
 def get_token(index):
@@ -21,6 +22,7 @@ client.add_cog(Startup(client))
 client.add_cog(RNG(client))
 client.add_cog(Admin(client))
 client.add_cog(Meme(client))
+client.add_cog(Dad(client))
 
 client.run(get_token(1))
 
