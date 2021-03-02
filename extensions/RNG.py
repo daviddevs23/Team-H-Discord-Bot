@@ -28,6 +28,10 @@ def check_tictactoe(tttarr):
         return 1
     elif tttarr[0][0] == "O" and tttarr[1][1] == "O" and tttarr[2][2] == "O":
         return 1
+    elif tttarr[0][2] == "X" and tttarr[1][1] == "X" and tttarr[2][0] == "X":
+        return 1
+    elif tttarr[0][2] == "O" and tttarr[1][1] == "O" and tttarr[2][0] == "O":
+        return 1
     j = 0
     while j < 3:
         if tttarr[j][0] == "X" and tttarr[j][1] == "X" and tttarr[j][2] == "X":
