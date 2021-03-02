@@ -76,7 +76,3 @@ class Dad(commands.Cog):
                     ]
         # Return random dad joke from list
         await ctx.send(f'{random.choice(dadJokes)}')
-
-# Class setup function
-def setup(client):
-    client.add_cog(Dad(client))
