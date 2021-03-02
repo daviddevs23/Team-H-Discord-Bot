@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 
-# A command class for adding and removing members
+# A command class for adding and removing members and other admin level commands
 class Admin(commands.Cog):
     def __init__(self, client):
         self.client = client
