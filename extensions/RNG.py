@@ -46,6 +46,14 @@ def check_tictactoe(tttarr):
     return 0
 
 
+# Command for checking if the tictactoe game is in a stalemate
+def stale_tictactoe(tttarr):
+    for row in range(3):
+        for col in range(3):
+            if tttarr[row][col] == "- ":
+                return 1
+    return 0
+
 # RNG commands test class
 class RNG(commands.Cog):
     def __init__(self, client):
@@ -107,7 +115,7 @@ class RNG(commands.Cog):
     # Plays tic-tac-toe
     @commands.command()
     async def ttt(self, ctx, x=None, y=None):
-        tttarr = [["-","-","-"],["-","-","-"],["-","-","-"]]
+        tttarr = [["- ","- ","- "],["- ","- ","- "],["- ","- ","- "]]
         if x == None:
             await ctx.send("The tic tac toe command needs an argument after it, \"Restart\" to start or restart a game")
             return
@@ -125,7 +133,7 @@ class RNG(commands.Cog):
                 posy = int(x)
                 with open("tictactoe.txt", "rb") as f:
                     tttarr = pickle.load(f)
-                if tttarr[posx][posy] != "-":
+                if tttarr[posx][posy] != "- ":
                     await ctx.send("There is already an X or O at that position.")
                     return
                 else:
@@ -136,9 +144,15 @@ class RNG(commands.Cog):
                         for row in range(3):
                             await ctx.send(tttarr[row][0] + "  " + tttarr[row][1] + "  " + tttarr[row][2])
                         return
+                    if stale_tictactoe(tttarr) == 0:
+                        await ctx.send("We are in a stalemate.")
+                        os.remove("tictactoe.txt")
+                        for row in range(3):
+                            await ctx.send(tttarr[row][0] + "  " + tttarr[row][1] + "  " + tttarr[row][2])
+                        return
                     compx = 0
                     compy = 0
-                    while tttarr[compx][compy] != "-":
+                    while tttarr[compx][compy] != "- ":
                         compx = randomnumgen(3)
                         compy = randomnumgen(3)
                     tttarr[compx][compy] = "O"
