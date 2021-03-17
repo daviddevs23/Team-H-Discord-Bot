@@ -2,8 +2,11 @@ import discord
 import random
 import pickle
 import os
+import requests
+import re
 from discord.ext import commands
 from math import floor
+from bs4 import BeautifulSoup
 
 
 # A function to return a random int between the argument and zero
@@ -53,6 +56,40 @@ def stale_tictactoe(tttarr):
             if tttarr[row][col] == "- ":
                 return 1
     return 0
+
+
+# Command to replace non-alpha and space characters for Hangman
+def hangman_validator(st):
+    validhchars = list("abcdefghijklmnopqrstuvwxyz ")
+    for ch in st:
+        if ch not in validhchars:
+            st = st.replace(ch, " ")
+    return re.sub(' +', ' ', st).strip()
+
+
+# Command to check if Hangman was won
+def hgwon(stri):
+    for hgc in stri:
+        if hgc == "-":
+            return 1
+    return 0
+
+
+# Command to create the ascii art for Hangman
+def hgart(liv):
+    if liv == 5:
+        return "___\n|  0"
+    elif liv == 4:
+        return "___\n|  0\n|  |\n|  |"
+    elif liv == 3:
+        return "___\n|   0\n| /|\n|   |"
+    elif liv == 2:
+        return "___\n|   0\n| /|\\\n|   |"
+    elif liv == 1:
+        return "___\n|   0\n| /|\\\n|   |\n| /"
+    elif liv == 0:
+        return "___\n|   0\n| /|\\\n|   |\n| /\\"
+
 
 # RNG commands test class
 class RNG(commands.Cog):
@@ -122,6 +159,7 @@ class RNG(commands.Cog):
         elif x == "Restart" or x == "restart" or x == "Start" or x == "start":
             with open("tictactoe.txt", "wb") as f:
                 pickle.dump(tttarr, f)
+                f.close()
             await ctx.send("Reset game.")
             return
         elif not os.path.exists("tictactoe.txt"):
@@ -133,6 +171,7 @@ class RNG(commands.Cog):
                 posy = int(x)
                 with open("tictactoe.txt", "rb") as f:
                     tttarr = pickle.load(f)
+                    f.close()
                 if tttarr[posx][posy] != "- ":
                     await ctx.send("There is already an X or O at that position.")
                     return
@@ -164,8 +203,97 @@ class RNG(commands.Cog):
                         return
                     with open("tictactoe.txt", "wb") as f:
                         pickle.dump(tttarr, f)
+                        f.close()
                     for row in range(3):
                         await ctx.send(tttarr[row][0]+"  "+tttarr[row][1]+"  "+tttarr[row][2])
                     return
             await ctx.send("The tic tac toe command needs an argument after it of the form \"0 1\"")
+            return
+
+    # Plays hangman
+    @commands.command()
+    async def hangman(self, ctx, x=None):
+        text = ''
+        if x == None:
+            await ctx.send("The hangman command needs an argument \"Restart\" to restart a game, a letter to guess")
+            return
+        elif x == "Restart" or x == "restart" or x == "Start" or x == "start":
+            response = requests.get(url="https://en.wikipedia.org/wiki/Discord_(software)")
+            soup = BeautifulSoup(response.content, "html.parser")
+            linklist = soup.find(id="bodyContent").find_all("a")
+            random.shuffle(linklist)
+            link = 0
+            for l in linklist:
+                if l['href'].find("/wiki/") == -1:
+                    continue
+                link = l
+                break
+            print(link)
+            text = link['title'].lower()
+            text = hangman_validator(text)
+            with open("hangman.txt", "w") as f:
+                f.write(text)
+                f.write("\n6\n")
+                for ch in text:
+                    if ch == " ":
+                        f.write(" ")
+                    else:
+                        f.write("-")
+                f.close()
+            await ctx.send("Reset game.")
+            with open("hangman.txt", "r") as f:
+                lines = f.readlines()
+                await ctx.send(lines[2])
+                f.close()
+            return
+        elif not os.path.exists("hangman.txt"):
+            await ctx.send("You must \"Restart\" the game first to play.")
+            return
+        elif x.isalpha() and len(x) == 1:
+            correct = 1
+            with open("hangman.txt", "r") as f:
+                lines = f.readlines()
+                f.close()
+            oristr = list(lines[0])
+            guestr = list(lines[2])
+            i = 0
+            x = x.lower()
+            while i < len(oristr):
+                if oristr[i] == x:
+                    correct = 0
+                    guestr[i] = x
+                i += 1
+            if correct == 0:
+                await ctx.send("Correct!")
+                outstr = ""
+                for char in guestr:
+                    outstr += char
+                await ctx.send(outstr)
+                if hgwon(outstr) == 0:
+                    os.remove("hangman.txt")
+                    await ctx.send("The person was saved, you won!")
+                    return
+                outstr += "\n"
+                lines[2] = outstr
+                with open("hangman.txt", "w") as f:
+                    f.writelines(lines)
+                    f.close()
+                return
+            else:
+                await ctx.send("Wrong!")
+                lives = int(lines[1])
+                lives -= 1
+                outstr = hgart(lives)
+                await ctx.send(outstr)
+                if lives == 0:
+                    os.remove("hangman.txt")
+                    await ctx.send("The person was hanged, you lost!")
+                    return
+                lines[1] = str(lives) + "\n"
+                with open("hangman.txt", "w") as f:
+                    f.writelines(lines)
+                    f.close()
+                return
+        else:
+            await ctx.send("The hangman command needs an argument \"Restart\" to restart a game, a letter to guess")
             return
