@@ -58,6 +58,32 @@ def stale_tictactoe(tttarr):
     return 0
 
 
+# Web-scrapes wikipedia for an article title to use for the Hangman game
+def hgwebscraper(linknum):
+    response = requests.get(url="https://en.wikipedia.org/wiki/Discord_(software)")
+    soup = BeautifulSoup(response.content, "html.parser")
+    linklist = soup.find(id="bodyContent").find_all("a")
+    random.shuffle(linklist)
+    link = 0
+    for l in linklist:
+        if l['href'].find("/wiki/") == -1:
+            continue
+        link = l
+        break
+    while linknum > 0:
+        link = "https://en.wikipedia.org" + link['href']
+        response = requests.get(url=link)
+        soup = BeautifulSoup(response.content, "html.parser")
+        linklist = soup.find(id="bodyContent").find_all("a")
+        random.shuffle(linklist)
+        for l in linklist:
+            if l['href'].find("/wiki/") == -1:
+                continue
+            link = l
+            break
+        linknum -= 1
+    return link
+
 # Command to replace non-alpha and space characters for Hangman
 def hangman_validator(st):
     validhchars = list("abcdefghijklmnopqrstuvwxyz ")
@@ -218,16 +244,7 @@ class RNG(commands.Cog):
             await ctx.send("The hangman command needs an argument \"Restart\" to restart a game, a letter to guess")
             return
         elif x == "Restart" or x == "restart" or x == "Start" or x == "start":
-            response = requests.get(url="https://en.wikipedia.org/wiki/Discord_(software)")
-            soup = BeautifulSoup(response.content, "html.parser")
-            linklist = soup.find(id="bodyContent").find_all("a")
-            random.shuffle(linklist)
-            link = 0
-            for l in linklist:
-                if l['href'].find("/wiki/") == -1:
-                    continue
-                link = l
-                break
+            link = hgwebscraper(2)
             print(link)
             text = link['title'].lower()
             text = hangman_validator(text)
