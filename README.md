@@ -2,8 +2,8 @@
 
 ## Set up your Token.txt as the following:
 > deliminator-Example: :: or ;;  <br />
-> Discord Bot Token
-> Test Bot Deliminator
-> Test Bot Token
-> Praw client id
-> Praw client secret
+> Discord Bot Token <br />
+> Test Bot Deliminator <br />
+> Test Bot Token <br />
+> Praw client id <br /> 
+> Praw client secret <br />
