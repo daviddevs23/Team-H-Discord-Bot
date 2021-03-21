@@ -17,7 +17,3 @@ class Startup(commands.Cog):
 
         print("Bot has initialized")
 
-    # Just and example of a cog based command
-    @commands.command()
-    async def example(self, ctx):
-        await ctx.send("Example Commands")
