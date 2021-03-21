@@ -1,4 +1,4 @@
-import discord, requests, re, os, random, praw
+import discord, requests, re, os, random, asyncpraw
 from discord.ext import commands
 
 # Grab access info for Reddit API
@@ -16,7 +16,7 @@ class Meme(commands.Cog):
     # Grabs a meme off of the internet and posts it
     @commands.command()
     async def meme(self, ctx):
-        reddit = praw.Reddit(
+        reddit = asyncpraw.Reddit(
                 client_id=tokens(4),
                 client_secret=tokens(5),
                 user_agent="TeamHBot"
@@ -30,16 +30,15 @@ class Meme(commands.Cog):
                 "wholesomememes",
                 ]
 
-        sub = reddit.subreddit(subs[random.randint(0, len(subs) - 1)])
-        posts = sub.hot(limit=25)
+        sub = await reddit.subreddit(subs[random.randint(0, len(subs) - 1)])
 
         memes = []
         url = ""
         file_name = ""
         
         # Get rid of pinned posts
-        for post in posts:
-            if not post.stickied:
+        async for post in sub.hot(limit=25):
+            if not post.stickied and not post.over_18:
                 memes.append(post)
 
         url = memes[random.randint(0, len(memes) - 1)].url
