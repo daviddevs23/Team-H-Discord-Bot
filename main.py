@@ -8,6 +8,7 @@ from extensions.admin import Admin
 from extensions.meme import Meme
 from extensions.dad import Dad
 from extensions.poll import Poll
+from extensions.music import Music
 
 
 
@@ -27,6 +28,7 @@ client.add_cog(Admin(client))
 client.add_cog(Meme(client))
 client.add_cog(Dad(client))
 client.add_cog(Poll(client))
+client.add_cog(Music(client))
 
 client.run(get_token(1))
 
