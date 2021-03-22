@@ -60,7 +60,6 @@ class Story(commands.Cog):
         title = rand_story.title
         contents = rand_story.selftext
 
-        print(title)
 
         em = discord.Embed(title = title, description = contents)
 
