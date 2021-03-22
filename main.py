@@ -10,6 +10,7 @@ from extensions.dad import Dad
 from extensions.poll import Poll
 from extensions.music import Music
 from extensions.roast import Roast
+from extensions.story import Story
 
 
 
@@ -31,6 +32,7 @@ client.add_cog(Dad(client))
 client.add_cog(Poll(client))
 client.add_cog(Music(client))
 client.add_cog(Roast(client))
+client.add_cog(Story(client))
 
 client.run(get_token(1))
 
