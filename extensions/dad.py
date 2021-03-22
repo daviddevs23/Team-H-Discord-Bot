@@ -12,11 +12,6 @@ class Dad(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    # Listener to confirm bot has booted properly
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print('Dad Bot is online.')
-
     # Listener that checks messages for "I'm"
     @commands.Cog.listener()
     async def on_message(self, message):
