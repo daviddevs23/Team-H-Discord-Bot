@@ -28,6 +28,11 @@ class Meme(commands.Cog):
                 "dankmemes",
                 "antimeme",
                 "wholesomememes",
+                "terriblefacebookmemes",
+                "funny",
+                "PrequelMemes",
+                "crappyoffbrands",
+                "bonehurtingjuice",
                 ]
 
         sub = await reddit.subreddit(subs[random.randint(0, len(subs) - 1)])
