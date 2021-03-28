@@ -8,7 +8,7 @@ class Admin(commands.Cog):
         self.client = client
 
     # Kick member
-    @commands.command()
+    @commands.command(description="Admin command used for removing individuals")
     async def kick(self, ctx, member : discord.Member=None, *, reason=None):
         # Check if the person sending the command is an admin
         if ctx.author.guild_permissions.administrator:
@@ -31,7 +31,7 @@ class Admin(commands.Cog):
             await ctx.send(f"Sorry, you are not an admin {ctx.author}")
 
     # Ban member
-    @commands.command()
+    @commands.command(description="Admin command used to permantly remove individuals")
     async def ban(self, ctx, member : discord.Member=None, *, reason=None):
         # Check if the person sending the command is an admin
         if ctx.author.guild_permissions.administrator:
@@ -54,7 +54,7 @@ class Admin(commands.Cog):
             await ctx.send(f"Sorry, you are not an admin {ctx.author}")
 
     # Unban a member
-    @commands.command()
+    @commands.command(description="Admin command that allows a user to rejoin")
     async def unban(self, ctx, *, member=None):
         # Check if the person sending the command is an admin
         if ctx.author.guild_permissions.administrator:

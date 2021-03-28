@@ -19,11 +19,18 @@ class Music(commands.Cog):
             return
 
         voiceChannel = discord.utils.get(ctx.guild.voice_channels, name='General')
-        await voiceChannel.connect()
+
+        try:
+            await voiceChannel.connect()
+
+        except:
+            pass
+
         voice = discord.utils.get(self.client.voice_clients, guild=ctx.guild)
 
         ydl_opts = {
             'format': 'bestaudio/best',
+            'quiet': True,
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
