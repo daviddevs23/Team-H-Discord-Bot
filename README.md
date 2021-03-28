@@ -7,3 +7,7 @@
 > Test Bot Token <br />
 > Praw client id <br /> 
 > Praw client secret <br />
+> MySQL Username <br />
+> MySQL Password <br />
+> MySQL IP <br />
+> MySQL Database <br />
