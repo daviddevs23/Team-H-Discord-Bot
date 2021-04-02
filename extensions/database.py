@@ -1,4 +1,5 @@
-import mysql.connector
+import mysql.connector, base64
+from cryptography.fernet import Fernet
 
 def get_token(index):
     with open("../token.txt", "r") as f:
@@ -9,37 +10,47 @@ conn = mysql.connector.connect(user=get_token(6),
                                password=get_token(7),
                                host=get_token(8),
                                database=get_token(9))
-
 cursor = conn.cursor(prepared=True)
 
-# Simple example of inserting data. Same process for updating
-def exampleInsertion(name, ID):
+# An encryption library that encrypts things twice
+f = Fernet(base64.urlsafe_b64encode(get_token(10).encode()))
+
+# Convert the message into a encrypted string and returns it
+def encryptPhrase(message):
+    return f.encrypt(message.encode()).decode()
+
+# Returns the encrypted message as a string and returns the decrypted message
+def decryptPhrase(message):
+    return f.decrypt(message.encode()).decode()
+
+def insertUserContact(username, number):
     try:
-        # Use a %s whereever you want to insert data, this protects from
-        # SQL injection attacks
-        basestmt = 'insert into test values (%s, %s)'
-        cursor.execute(basestmt, (name, ID,))
+        basestmt = "insert into userContact values(%s, %s);"
+        number = encryptPhrase(number)
+        cursor.execute(basestmt, (username, number))
+        
         conn.commit()
         return True
-    
+
     except:
         return False
 
-# Simple example of reading data.
-def exampleSelection(name, ID):
+def getUserContact(username):
     try:
-        basestmt = 'select * from test where name=%s and numberID=%s'
-        cursor.execute(basestmt,(name, ID,))
-        returnVals = []
+        basestmt = "select number from userContact where name=%s;"
+        cursor.execute(basestmt, (username,))
 
-        # Cursor object stores all of the return values, have to manually
-        # grab throught iteration
+        retVals = []
+
         for person in cursor:
-            returnVals.append(person)
+            retVals.append(person)
 
-        return returnVals
-    
+        retVals = retVals[0][0]
+
+        retVals = decryptPhrase(retVals)
+
+        return retVals
+
     except:
         return False
-
-
+    
