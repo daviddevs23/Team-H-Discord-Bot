@@ -108,3 +108,88 @@ def tttUpdateGame(serverID, gameBoard):
     except:
         return False
 
+ # Returns a 2d array of the game if it exists, if a game with that ID does not
+ # exist, it will return false. Can be used to check if a game exists
+def tttGetCurrentBoard(serverID):
+    try:
+        basestmt = "select board from ttt where serverID=%s;"
+        
+        cursor.execute(basestmt, (serverID,))
+        res = []
+
+        for i in cursor:
+            res.append(i)
+
+        if len(res[0]) == 0:
+            return False
+
+        res = list(res[0][0])
+
+        return [res[0:3], res[3:6], res[6:9]]
+
+
+    except:
+        return False
+
+# Pass in the serverID, desired word, and the currentWord. For the currentWord,
+# you could probably just pass it in with the underscores and spacing.
+def hangmanCreate(serverID, correctWord, currentWord):
+    try: 
+        basestmt = "insert into hangman values(%s, %s, %s);"
+
+        cursor.execute(basestmt, (serverID, currentWord, correctWord))
+        
+        conn.commit()
+
+        return True
+
+    except:
+        return False
+
+# Just enter the serverID and the current state of the word they are guessing
+def hangmanUpdate(serverID, currentWord):
+    try:
+        basestmt = "update hangman set currentGuess=%s where serverID=%s;"
+
+        cursor.execute(basestmt,(currentWord, serverID,))
+        conn.commit()
+        
+        return True
+
+    except:
+        return False
+
+# Returns a tuple of (currentWord, correctWord). If it doesn't exist, it returns
+# False
+def hangmanGetCurrentGame(serverID):
+    try:
+        basestmt = "select currentGuess, correctGuess from hangman where serverID=%s;"
+        
+        cursor.execute(basestmt, (serverID,))
+        res = []
+
+        for i in cursor:
+            res.append(i)
+
+        if len(res[0]) == 0:
+            return False
+
+        return list(res[0])
+
+
+    except:
+        return False
+
+# Deletes the game of the given serverID
+def hangmanDelete(serverID):
+    try:
+        basestmt = "delete from hangman where serverID=%s;"
+
+        cursor.execute(basestmt, (serverID,))
+        conn.commit()
+
+        return True
+
+    except:
+        return False
+
