@@ -123,7 +123,7 @@ class RNG(commands.Cog):
         self.client = client
 
     # Outputs heads or tails in a presumably 50/50 ratio
-    @commands.command()
+    @commands.command(description="Command used for flipping a coin")
     async def coinflip(self, ctx):
         if randomnumgen(2) == 1:
             await ctx.send("Heads")
@@ -131,26 +131,26 @@ class RNG(commands.Cog):
             await ctx.send("Tails")
 
     # Takes a positive int argument and outputs a numbered random choice between 1 and the int
-    @commands.command()
-    async def RNG(self, ctx, x=None):
-        if x == None:
-            await ctx.send("The RNG command requires an integer argument greater than 1 after it.")
-        elif x.isdigit() and int(x) > 1:
-            await ctx.send("Choose option " + str(randomnumgen(int(x)) + 1))
+    @commands.command(description="Give a number, and I will choose a random option between one and that number")
+    async def choose(self, ctx, number=None):
+        if number == None:
+            await ctx.send("The choose command requires an integer argument greater than 1 after it.")
+        elif number.isdigit() and int(number) > 1:
+            await ctx.send("Choose option " + str(randomnumgen(int(number)) + 1))
         else:
-            await ctx.send("The RNG command requires an integer argument greater than 1 after it.")
+            await ctx.send("The choose command requires an integer argument greater than 1 after it.")
 
     # Plays rock, paper, scissors with the user
-    @commands.command()
-    async def RPSgame(self, ctx, x=None):
-        if x == None:
+    @commands.command(description="We can play Rock, Paper, Scissors if you choose one of those when asking me")
+    async def RPSgame(self, ctx, choice=None):
+        if choice == None:
             await ctx.send("The RPSgame command is for Rock, Paper, Scissors. It requires one of those words after it.")
             return
 
         listofrps = ["rock", "rocks", "paper", "papers", "scissor", "scissors"]
         z = 5
         for i in range(6):
-            if x.lower() == listofrps[i]:
+            if choice.lower() == listofrps[i]:
                 z = randomnumgen(3)
                 await ctx.send(rpsswitch(z))
                 i = int(floor(i/2))
@@ -176,7 +176,7 @@ class RNG(commands.Cog):
             await ctx.send("The RPSgame command is for Rock, Paper, Scissors. It requires one of those words after it.")
 
     # Plays tic-tac-toe
-    @commands.command()
+    @commands.command(description="We can play Tic-Tac-Toe. First tell me to \"start\" the game, then choose a coord")
     async def ttt(self, ctx, x=None, y=None):
         tttarr = [["- ","- ","- "],["- ","- ","- "],["- ","- ","- "]]
         if x == None:
@@ -237,14 +237,18 @@ class RNG(commands.Cog):
             return
 
     # Plays hangman
-    @commands.command()
-    async def hangman(self, ctx, x=None):
+    @commands.command(description="We can play Hangman. First you need to tell to \"start\", then you can start "
+                                  "guessing individual letters")
+    async def hangman(self, ctx, letter=None):
         text = ''
-        if x == None:   # No argument provided
+        if letter == None:   # No argument provided
             await ctx.send("The hangman command needs an argument, \"Restart\" to restart a game, a letter to guess")
             return
-        elif x == "Restart" or x == "restart" or x == "Start" or x == "start":  # Restarts the game
-            link = hgwebscraper(2)  # Grabs a random wikipedia article link
+        elif letter == "Restart" or letter == "restart" or letter == "Start" or letter == "start":  # Restarts the game
+            try:
+                link = hgwebscraper(2)  # Grabs a random wikipedia article link
+            except:
+                link = hgwebscraper(2)
             print(link)
             text = link['title'].lower()
             text = hangman_validator(text)  # Formats word/phrase for hangman
@@ -267,7 +271,7 @@ class RNG(commands.Cog):
         elif not os.path.exists("hangman.txt"):  # Requires that the game is 'started' for other arguments to be checked
             await ctx.send("You must \"Restart\" the game first to play.")
             return
-        elif x.isalpha() and len(x) == 1:       # Checks that the argument is a single letter
+        elif letter.isalpha() and len(letter) == 1:       # Checks that the argument is a single letter
             correct = 1
             with open("hangman.txt", "r") as f:  # gets the current game state
                 lines = f.readlines()
@@ -276,7 +280,7 @@ class RNG(commands.Cog):
             guestr = list(lines[2])
             guessedchars = lines[3]
             i = 0
-            x = x.lower()
+            x = letter.lower()
             if guessedchars.find(x) != -1:
                 await ctx.send("That letter was already guessed.")
                 return
