@@ -18,13 +18,13 @@ meme_talk = ['Blobfish',
              '?',
              'The answer to life, the universe, and everything is 42.']
 # Temporary will be replaced by help command description
-discord_talk = ['chat',
+discord_talk = ['converse',
                 'Ask me something.',
                 'help',
                 'I list the commands you can tell me to do.',
                 'coinflip',
                 'I flip a coin.',
-                'RNG',
+                'choose',
                 'Give me a number, and I will choose a random option between one and that number.',
                 'RPSgame',
                 'We can play Rock, Paper, Scissors if you choose one of those when asking me.',
@@ -66,9 +66,9 @@ class Converse(commands.Cog):
         self.client = client
 
     # Chats with the bot
-    @commands.command()
-    async def chat(self, ctx, x=None):
-        if x == None:
+    @commands.command(description="Chat with me")
+    async def chat(self, ctx, sentence=None):
+        if sentence == None:
             await ctx.send("You need to say something.")
         else:
-            await ctx.send(my_bot.get_response(x.lower()))
+            await ctx.send(my_bot.get_response(sentence.lower()))

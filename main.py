@@ -11,7 +11,7 @@ from extensions.poll import Poll
 from extensions.music import Music
 from extensions.roast import Roast
 from extensions.story import Story
-from extensions.chat import Converse
+from extensions.converse import Converse
 
 
 # Command for parcing token.txt
