@@ -20,7 +20,7 @@ class Dad(commands.Cog):
         content = message.content
 
         # Check if message was sent by dad.py, ignore if it was
-        if 'Dad Bot' in content:
+        if message.author.id == self.client.user.id:
             return
 
         # Check if message contains keyword "I'm"
