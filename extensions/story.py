@@ -1,6 +1,6 @@
 import discord
 import os
-import praw
+import asyncpraw
 import random
 import requests
 import re
@@ -21,14 +21,15 @@ class Story(commands.Cog):
         self.client = client
 
 
+
     # story command
     @commands.command()
     async def story(self, ctx):
 
         # initialize praw
-        reddit = praw.Reddit(
-                            client_id=tokens(self, 4),
-                            client_secret=tokens(self, 5),
+        reddit = asyncpraw.Reddit(
+                            client_id=tokens(self, 2),
+                            client_secret=tokens(self, 3),
                             user_agent="TeamHBot"
                             )
 
@@ -40,7 +41,7 @@ class Story(commands.Cog):
                 ]
 
         # Choose random subreddit from subs
-        sub = reddit.subreddit(random.choice(subs))
+        sub = await reddit.subreddit(random.choice(subs))
         posts = sub.hot(limit = 50)
 
         # Empty list to store posts
@@ -51,7 +52,7 @@ class Story(commands.Cog):
         contents = ""
 
         # Get rid of pinned posts and append to stories
-        for post in posts:
+        async for post in posts:
             if not post.stickied and not post.over_18:
                 stories.append(post)
 
@@ -59,7 +60,6 @@ class Story(commands.Cog):
 
         title = rand_story.title
         contents = rand_story.selftext
-
 
         em = discord.Embed(title = title, description = contents)
 
