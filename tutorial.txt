@@ -1,0 +1,27 @@
+Hello, I am TeamHBot! I am a Discord bot with tons of built in functionality to help boost the value of your server. Type ./cont to continue walking through functions, type ./cont end at any time to end tutorial.
+--
+Awesome! The very first thing you'll need to know is that I operate asynchronously, this means that I only execute commands when prompted by a delimiter (./). This is to reduce energy consumption as well as to avoid accidental activation. Another note is when I am describing a function, I will use the format ./function <required> [optional] when describing functions that take parameters. Some functions won't take parameters at all and will just be written as ./function.The first function we'll call is the ./dad function, type './dad' and I'll tell you a dad joke.
+--
+Neat'o. Another function of the dad bot is to listen for the occurence of "I'm" in any message. This defeates the purpose of being asynchronous, but it is well worth it. Try typing, "I'm hungry". (no need for a delimiter in this case)
+--
+That is probably the single most useful function I have. Next we'll use the ./poll function. Use this when you are having a vote amoung server members. The format for this function is ./poll <title> <option 1> <option 2> [option 3] ... This means you can have as many choices as you want so long as there are at least 2. Try typing './poll favorite_color orange red blue'.
+--
+Next we'll do coin flip. type './coinflip'.
+--
+Next is the random number generator, the format for this function is ./RNG <upper bound>. Try typing './RNG 10' to get a random number between 1-10.
+--
+Next we'll play rock paper scissors, the format is ./RPSgame <choice>. Try typing './RPSgame rock' and see if you beat me!
+--
+Next we'll play a game of tic-tac-toe. To play tic-tac-toe, you'll first have to type './ttt Restart' to initialize the game. Once the game has been initialized, you can type ./ttt <coordinate x> <coordinate y> to choose a spot. Play through the whole game.
+--
+Now we'll play hangman. To play start by typing './hangman Reset' to initialize the game. Once the game has been initialized, you can type './hangman <choice>' until the game has ended.
+ --
+You can also call ./meme and I'll pull a meme from reddit. Try typing './meme'.
+--
+You can also start playing music on the general voice channel calling ./play <youtube url>. While the music is playing, you can call any of these functions, ./pause ./resume ./stop or ./leave to  disconnect from the voice channel. Copy and paste this command to test, "./play https://www.youtube.com/watch?v=LDU_Txk06tM".
+--
+I can also roast people by calling the function ./roast [name], if a name is not included as a parameter, I'll just insult you. Try typing './roast' and then './roast Ben'.
+--
+Finally, you can get a story from reddit by calling ./story.
+--
+That does it for all my different functions, you now have my permission to go vibe in chat.
