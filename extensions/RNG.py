@@ -7,7 +7,7 @@ import re
 from discord.ext import commands
 from math import floor
 from bs4 import BeautifulSoup
-
+from extensions.database import tttCreateGame, tttGetCurrentBoard, tttDeleteGame, tttUpdateGame
 
 # A function to return a random int between the argument and zero
 def randomnumgen(x):
@@ -183,21 +183,35 @@ class RNG(commands.Cog):
             await ctx.send("The tic tac toe command needs an argument after it, \"Restart\" to start or restart a game")
             return
         elif x == "Restart" or x == "restart" or x == "Start" or x == "start":
-            with open("tictactoe.txt", "wb") as f:
-                pickle.dump(tttarr, f)
-                f.close()
-            await ctx.send("Reset game.")
+            # with open("tictactoe.txt", "wb") as f:
+            #    pickle.dump(tttarr, f)
+            #    f.close()
+            if tttCreateGame(ctx.guild.id, tttarr):
+                await ctx.send("Reset game.")
+            else:
+                await ctx.send("Sorry, failed to create a tic-tac-toe game for this server. Defaults to universal game.")
+                with open("tictactoe.txt", "wb") as f:
+                    pickle.dump(tttarr, f)
+                    f.close()
             return
-        elif not os.path.exists("tictactoe.txt"):
-            await ctx.send("You must \"Restart\" the game first to play.")
-            return
+        # elif not os.path.exists("tictactoe.txt"):
+        #    await ctx.send("You must \"Restart\" the game first to play.")
+        #    return
         else:
             if x.isdigit() and y.isdigit() and 3 > int(x) >= 0 and 3 > int(y) >= 0:
                 posx = int(y)
                 posy = int(x)
-                with open("tictactoe.txt", "rb") as f:
-                    tttarr = pickle.load(f)
-                    f.close()
+                # with open("tictactoe.txt", "rb") as f:
+                #    tttarr = pickle.load(f)
+                #    f.close()
+                tttarr = tttGetCurrentBoard(ctx.guild.id)
+                if not tttarr and not os.path.exists("tictactoe.txt"):
+                    await ctx.send("You must \"Start\" the game first to play.")
+                    return
+                elif not tttarr and os.path.exists("tictactoe.txt"):
+                    with open("tictactoe.txt", "rb") as f:
+                        tttarr = pickle.load(f)
+                        f.close()
                 if tttarr[posx][posy] != "- ":
                     await ctx.send("There is already an X or O at that position.")
                     return
@@ -205,13 +219,17 @@ class RNG(commands.Cog):
                     tttarr[posx][posy] = "X"
                     if check_tictactoe(tttarr) == 1:
                         await ctx.send("You win!")
-                        os.remove("tictactoe.txt")
+                        if os.path.exists("tictactoe.txt"):
+                            os.remove("tictactoe.txt")
+                        tttDeleteGame(ctx.guild.id)
                         for row in range(3):
                             await ctx.send(tttarr[row][0] + "  " + tttarr[row][1] + "  " + tttarr[row][2])
                         return
                     if stale_tictactoe(tttarr) == 0:
                         await ctx.send("We are in a stalemate.")
-                        os.remove("tictactoe.txt")
+                        if os.path.exists("tictactoe.txt"):
+                            os.remove("tictactoe.txt")
+                        tttDeleteGame(ctx.guild.id)
                         for row in range(3):
                             await ctx.send(tttarr[row][0] + "  " + tttarr[row][1] + "  " + tttarr[row][2])
                         return
@@ -223,13 +241,19 @@ class RNG(commands.Cog):
                     tttarr[compx][compy] = "O"
                     if check_tictactoe(tttarr) == 1:
                         await ctx.send("I win!")
-                        os.remove("tictactoe.txt")
+                        if os.path.exists("tictactoe.txt"):
+                            os.remove("tictactoe.txt")
+                        tttDeleteGame(ctx.guild.id)
                         for row in range(3):
                             await ctx.send(tttarr[row][0] + "  " + tttarr[row][1] + "  " + tttarr[row][2])
                         return
-                    with open("tictactoe.txt", "wb") as f:
-                        pickle.dump(tttarr, f)
-                        f.close()
+                    if os.path.exists("tictactoe.txt"):
+                        with open("tictactoe.txt", "wb") as f:
+                            pickle.dump(tttarr, f)
+                            f.close()
+                    if not tttUpdateGame(ctx.guild.id, tttarr) and not os.path.exists("tictactoe.txt"):
+                        await ctx.send("Failed to save the turn.")
+                        return
                     for row in range(3):
                         await ctx.send(tttarr[row][0]+"  "+tttarr[row][1]+"  "+tttarr[row][2])
                     return
@@ -245,10 +269,13 @@ class RNG(commands.Cog):
             await ctx.send("The hangman command needs an argument, \"Restart\" to restart a game, a letter to guess")
             return
         elif letter == "Restart" or letter == "restart" or letter == "Start" or letter == "start":  # Restarts the game
-            try:
-                link = hgwebscraper(2)  # Grabs a random wikipedia article link
-            except:
-                link = hgwebscraper(2)
+            successLink = 0
+            while successLink == 0:
+                try:
+                    link = hgwebscraper(2)  # Grabs a random wikipedia article link
+                    successLink = 1
+                except:
+                    successLink = 0
             print(link)
             text = link['title'].lower()
             text = hangman_validator(text)  # Formats word/phrase for hangman
