@@ -11,3 +11,4 @@
 > MySQL Password <br />
 > MySQL IP <br />
 > MySQL Database <br />
+> Base64 Encryption Key <br />
