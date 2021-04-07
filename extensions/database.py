@@ -2,7 +2,7 @@ import mysql.connector, base64
 from cryptography.fernet import Fernet
 
 def get_token(index):
-    with open("../token.txt", "r") as f:
+    with open("token.txt", "r") as f:
         lines = f.readlines()
         return lines[index].strip()
 
@@ -65,8 +65,10 @@ def tttCreateGame(serverID, gameBoard):
         for i in gameBoard:
             for j in i:
                 board = board + j
+        
+        serverID = str(serverID)
 
-        cursor.execute(basestmt, (serverID, board))
+        cursor.execute(basestmt, (str(serverID), board,))
         
         conn.commit()
 
