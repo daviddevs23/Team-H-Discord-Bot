@@ -60,6 +60,8 @@ def getUserContact(username):
 # Takes in a serverID and a 2D array for the gameboard
 def tttCreateGame(serverID, gameBoard):
     try: 
+        tttDeleteGame(serverID)
+
         basestmt = "insert into ttt values(%s, %s);"
         board = ""
         for i in gameBoard:
@@ -125,10 +127,13 @@ def tttGetCurrentBoard(serverID):
         if len(res[0]) == 0:
             return False
 
-        res = list(res[0][0])
+        res = list(res[0][0].replace(" ", ""))
+
+        for i in range(len(res)):
+            if res[i] == "-":
+                res[i] = "- "
 
         return [res[0:3], res[3:6], res[6:9]]
-
 
     except:
         return False
