@@ -1,6 +1,6 @@
 import discord
 import random
-import pickle
+# import pickle
 import os
 import requests
 import re
@@ -183,75 +183,70 @@ class RNG(commands.Cog):
             await ctx.send("The tic tac toe command needs an argument after it, \"Restart\" to start or restart a game")
             return
         elif x == "Restart" or x == "restart" or x == "Start" or x == "start":
-            # with open("tictactoe.txt", "wb") as f:
-            #    pickle.dump(tttarr, f)
-            #    f.close()
+            if tttGetCurrentBoard(ctx.guild.id):
+                tttDeleteGame(ctx.guild.id)
+
             if tttCreateGame(ctx.guild.id, tttarr):
                 await ctx.send("Reset game.")
             else:
-                await ctx.send("Sorry, failed to create a tic-tac-toe game for this server. Defaults to universal game.")
-                with open("tictactoe.txt", "wb") as f:
-                    pickle.dump(tttarr, f)
-                    f.close()
+                await ctx.send("Sorry, failed to create a tic-tac-toe game for this server.")
+                # with open("tictactoe.txt", "wb") as f:
+                #    pickle.dump(tttarr, f)
+                #    f.close()
             return
-        # elif not os.path.exists("tictactoe.txt"):
-        #    await ctx.send("You must \"Restart\" the game first to play.")
-        #    return
         else:
             if x.isdigit() and y.isdigit() and 3 > int(x) >= 0 and 3 > int(y) >= 0:
                 posx = int(y)
                 posy = int(x)
-                # with open("tictactoe.txt", "rb") as f:
-                #    tttarr = pickle.load(f)
-                #    f.close()
                 tttarr = tttGetCurrentBoard(ctx.guild.id)
-                if not tttarr and not os.path.exists("tictactoe.txt"):
+                print(tttarr)
+                if not tttarr:
                     await ctx.send("You must \"Start\" the game first to play.")
                     return
-                elif not tttarr and os.path.exists("tictactoe.txt"):
-                    with open("tictactoe.txt", "rb") as f:
-                        tttarr = pickle.load(f)
-                        f.close()
-                if tttarr[posx][posy] != "- ":
+                # elif not tttarr and os.path.exists("tictactoe.txt"):
+                #    with open("tictactoe.txt", "rb") as f:
+                #        tttarr = pickle.load(f)
+                #        f.close()
+                if tttarr[posx][posy] == "O" or tttarr[posx][posy] == "X":
                     await ctx.send("There is already an X or O at that position.")
                     return
                 else:
                     tttarr[posx][posy] = "X"
                     if check_tictactoe(tttarr) == 1:
                         await ctx.send("You win!")
-                        if os.path.exists("tictactoe.txt"):
-                            os.remove("tictactoe.txt")
+                        # if os.path.exists("tictactoe.txt"):
+                        #    os.remove("tictactoe.txt")
                         tttDeleteGame(ctx.guild.id)
                         for row in range(3):
                             await ctx.send(tttarr[row][0] + "  " + tttarr[row][1] + "  " + tttarr[row][2])
                         return
                     if stale_tictactoe(tttarr) == 0:
                         await ctx.send("We are in a stalemate.")
-                        if os.path.exists("tictactoe.txt"):
-                            os.remove("tictactoe.txt")
+                        # if os.path.exists("tictactoe.txt"):
+                        #    os.remove("tictactoe.txt")
                         tttDeleteGame(ctx.guild.id)
                         for row in range(3):
                             await ctx.send(tttarr[row][0] + "  " + tttarr[row][1] + "  " + tttarr[row][2])
                         return
                     compx = 0
                     compy = 0
-                    while tttarr[compx][compy] != "- ":
+                    while tttarr[compx][compy] == "O" or tttarr[compx][compy] == "X":
                         compx = randomnumgen(3)
                         compy = randomnumgen(3)
                     tttarr[compx][compy] = "O"
                     if check_tictactoe(tttarr) == 1:
                         await ctx.send("I win!")
-                        if os.path.exists("tictactoe.txt"):
-                            os.remove("tictactoe.txt")
+                        # if os.path.exists("tictactoe.txt"):
+                        #    os.remove("tictactoe.txt")
                         tttDeleteGame(ctx.guild.id)
                         for row in range(3):
                             await ctx.send(tttarr[row][0] + "  " + tttarr[row][1] + "  " + tttarr[row][2])
                         return
-                    if os.path.exists("tictactoe.txt"):
-                        with open("tictactoe.txt", "wb") as f:
-                            pickle.dump(tttarr, f)
-                            f.close()
-                    if not tttUpdateGame(ctx.guild.id, tttarr) and not os.path.exists("tictactoe.txt"):
+                    # if os.path.exists("tictactoe.txt"):
+                    #    with open("tictactoe.txt", "wb") as f:
+                    #        pickle.dump(tttarr, f)
+                    #        f.close()
+                    if not tttUpdateGame(ctx.guild.id, tttarr):
                         await ctx.send("Failed to save the turn.")
                         return
                     for row in range(3):
