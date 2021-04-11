@@ -183,8 +183,8 @@ class RNG(commands.Cog):
             await ctx.send("The tic tac toe command needs an argument after it, \"Restart\" to start or restart a game")
             return
         elif x == "Restart" or x == "restart" or x == "Start" or x == "start":
-            if tttGetCurrentBoard(ctx.guild.id):
-                tttDeleteGame(ctx.guild.id)
+            # if tttGetCurrentBoard(ctx.guild.id):
+            #    tttDeleteGame(ctx.guild.id)
 
             if tttCreateGame(ctx.guild.id, tttarr):
                 await ctx.send("Reset game.")
