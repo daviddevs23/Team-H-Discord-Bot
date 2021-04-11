@@ -2,7 +2,7 @@ import mysql.connector, base64
 from cryptography.fernet import Fernet
 
 def get_token(index):
-    with open("token.txt", "r") as f:
+    with open("../token.txt", "r") as f:
         lines = f.readlines()
         return lines[index].strip()
 
@@ -142,6 +142,8 @@ def tttGetCurrentBoard(serverID):
 # you could probably just pass it in with the underscores and spacing.
 def hangmanCreate(serverID, correctWord, currentWord):
     try: 
+        hangmanDelete(serverID)
+
         basestmt = "insert into hangman values(%s, %s, %s);"
 
         cursor.execute(basestmt, (serverID, currentWord, correctWord))
@@ -187,6 +189,56 @@ def hangmanGetCurrentGame(serverID):
     except:
         return False
 
+# A helper function that returns the current string of guessed wrong letters, else False
+def hangmanGuessedWrongLetters(serverID):
+    try:
+        basestmt = "select guessed from hangman where serverID=%s;"
+
+        cursor.execute(basestmt,(serverID,))
+        res = []
+
+        for i in cursor:
+            res.append(i)
+
+        if len(res[0]) == 0:
+            return False
+
+        return res[0][0]
+
+    except:
+        return False
+
+# Gets you the number of lives you have left, if it fails, it will return False
+def hangmanGetLives(serverID):
+    lives = 5
+
+    try:
+        return lives - len(hangmanGuessedWrongLetters(serverID))
+
+    except:
+        return False
+
+# Adds the specified letter to the guessed letter string. It will return the 
+# string of guessed letters if it was successful, else False
+def hangmanUpdateWrongGuessed(serverID, letter):
+    try:
+
+        letter = letter.lower()
+        guessed = hangmanGuessedWrongLetters(serverID)
+
+        if (letter not in guessed):
+            guessed = guessed + letter
+
+            basestmt = "update hangman set guessed=%s where serverID=%s;"
+            cursor.execute(basestmt, (guessed, serverID))
+
+            conn.commit()
+
+        return guessed
+
+    except:
+        return False
+
 # Deletes the game of the given serverID
 def hangmanDelete(serverID):
     try:
@@ -200,3 +252,4 @@ def hangmanDelete(serverID):
     except:
         return False
 
+print(hangmanUpdateWrongGuessed("Test", "H"))
