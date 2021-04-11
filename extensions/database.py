@@ -85,7 +85,7 @@ def tttDeleteGame(serverID):
     try:
         basestmt = "delete from ttt where serverID=%s;"
 
-        cursor.execute(basestmt, (serverID,))
+        cursor.execute(basestmt, (str(serverID),))
         conn.commit()
 
         return True
@@ -104,7 +104,7 @@ def tttUpdateGame(serverID, gameBoard):
             for j in i:
                 board = board + j
 
-        cursor.execute(basestmt,(board, serverID,))
+        cursor.execute(basestmt,(board, str(serverID),))
         conn.commit()
         
         return True
@@ -118,7 +118,7 @@ def tttGetCurrentBoard(serverID):
     try:
         basestmt = "select board from ttt where serverID=%s;"
         
-        cursor.execute(basestmt, (serverID,))
+        cursor.execute(basestmt, (str(serverID),))
         res = []
 
         for i in cursor:
@@ -146,7 +146,7 @@ def hangmanCreate(serverID, correctWord, currentWord):
 
         basestmt = "insert into hangman values(%s, %s, %s);"
 
-        cursor.execute(basestmt, (serverID, currentWord, correctWord))
+        cursor.execute(basestmt, (str(serverID), currentWord, correctWord))
         
         conn.commit()
 
@@ -160,7 +160,7 @@ def hangmanUpdate(serverID, currentWord):
     try:
         basestmt = "update hangman set currentGuess=%s where serverID=%s;"
 
-        cursor.execute(basestmt,(currentWord, serverID,))
+        cursor.execute(basestmt,(currentWord, str(serverID),))
         conn.commit()
         
         return True
@@ -174,7 +174,7 @@ def hangmanGetCurrentGame(serverID):
     try:
         basestmt = "select currentGuess, correctGuess from hangman where serverID=%s;"
         
-        cursor.execute(basestmt, (serverID,))
+        cursor.execute(basestmt, (str(serverID),))
         res = []
 
         for i in cursor:
@@ -194,7 +194,7 @@ def hangmanGuessedWrongLetters(serverID):
     try:
         basestmt = "select guessed from hangman where serverID=%s;"
 
-        cursor.execute(basestmt,(serverID,))
+        cursor.execute(basestmt,(str(serverID),))
         res = []
 
         for i in cursor:
@@ -213,7 +213,7 @@ def hangmanGetLives(serverID):
     lives = 5
 
     try:
-        return lives - len(hangmanGuessedWrongLetters(serverID))
+        return lives - len(hangmanGuessedWrongLetters(str(serverID)))
 
     except:
         return False
@@ -224,13 +224,13 @@ def hangmanUpdateWrongGuessed(serverID, letter):
     try:
 
         letter = letter.lower()
-        guessed = hangmanGuessedWrongLetters(serverID)
+        guessed = hangmanGuessedWrongLetters(str(serverID))
 
         if (letter not in guessed):
             guessed = guessed + letter
 
             basestmt = "update hangman set guessed=%s where serverID=%s;"
-            cursor.execute(basestmt, (guessed, serverID))
+            cursor.execute(basestmt, (guessed, str(serverID),))
 
             conn.commit()
 
@@ -244,7 +244,7 @@ def hangmanDelete(serverID):
     try:
         basestmt = "delete from hangman where serverID=%s;"
 
-        cursor.execute(basestmt, (serverID,))
+        cursor.execute(basestmt, (str(serverID),))
         conn.commit()
 
         return True
@@ -252,4 +252,3 @@ def hangmanDelete(serverID):
     except:
         return False
 
-print(hangmanUpdateWrongGuessed("Test", "H"))
