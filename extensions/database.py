@@ -318,8 +318,8 @@ def withdrawPoints(serverID, username, amount):
         return False
 
 # Gets the persons current balance
-# Returns false if the person does not have an account with those identifiers
-# so this can also be used to check if a person exists
+# You can use this to test if a person exists by checking if the return type is
+# an integer, if it is not an integer,then that person does not exist
 def getPointsBalance(serverID, username):
     try:
         basestmt = "select balance from economy where username=%s and serverID=%s;"
