@@ -275,4 +275,98 @@ def hangmanDelete(serverID):
 
     except:
         return False
-print(decrementHangmanLives(1234))
+
+
+# Adds the given amount of points to that persons account
+def depositPoints(serverID, username, amount):
+    try:
+        balance = getPointsBalance(serverID, username)
+
+        if type(balance) != int:
+            return False
+        
+        balance = balance + amount
+
+        basestmt = "update economy set balance=%s where serverID=%s and username=%s;"
+
+        cursor.execute(basestmt, (balance, str(serverID), str(username),))
+        conn.commit()
+
+        return True
+
+    except:
+        return False
+
+# Removes the given amount of points to that persons account
+def withdrawPoints(serverID, username, amount):
+    try:
+        balance = getPointsBalance(serverID, username)
+
+        if type(balance) != int:
+            return False
+        
+        balance = balance - amount
+
+        basestmt = "update economy set balance=%s where serverID=%s and username=%s;"
+
+        cursor.execute(basestmt, (balance, str(serverID), str(username),))
+        conn.commit()
+
+        return True
+
+    except:
+        return False
+
+# Gets the persons current balance
+# Returns false if the person does not have an account with those identifiers
+# so this can also be used to check if a person exists
+def getPointsBalance(serverID, username):
+    try:
+        basestmt = "select balance from economy where username=%s and serverID=%s;"
+
+        cursor.execute(basestmt, (str(username), str(serverID),))
+
+        res = []
+
+        for i in cursor:
+            res.append(i)
+
+        if len(res[0]) == 0:
+            return False
+
+        return res[0][0]
+
+    except:
+        return False
+
+# Can create an instance of the economy user
+def createEconomyBoi(serverID, username):
+    try:
+        
+        # Checks to see if the person exists
+        temp = getPointsBalance(serverID, username)
+
+        if type(temp) == int:
+            return False
+
+        basestmt = "insert into economy values(%s, %s, %s);"
+
+        cursor.execute(basestmt, (str(serverID),str(username),0))
+        conn.commit()
+
+        return True
+
+    except:
+        return False
+
+
+
+print(withdrawPoints(1234, "Bobby", 5))
+
+
+
+
+
+
+
+
