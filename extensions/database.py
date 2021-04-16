@@ -144,9 +144,9 @@ def hangmanCreate(serverID, correctWord, currentWord):
     try: 
         hangmanDelete(serverID)
 
-        basestmt = "insert into hangman values(%s, %s, %s);"
+        basestmt = "insert into hangman values(%s, %s, %s, %s, %s);"
 
-        cursor.execute(basestmt, (str(serverID), currentWord, correctWord))
+        cursor.execute(basestmt, (str(serverID), currentWord, correctWord, "", 5,))
         
         conn.commit()
 
@@ -210,10 +210,34 @@ def hangmanGuessedWrongLetters(serverID):
 
 # Gets you the number of lives you have left, if it fails, it will return False
 def hangmanGetLives(serverID):
-    lives = 5
-
     try:
-        return lives - len(hangmanGuessedWrongLetters(str(serverID)))
+        basestmt = "select lives from hangman where serverID=%s"
+        cursor.execute(basestmt, (str(serverID),))
+
+        res = []
+
+        for i in cursor:
+            res.append(i)
+
+        if len(res[0]) == 0:
+            return False
+
+        return res[0][0]
+
+    except:
+        return False
+
+# Decreases the number of lives by 1
+def decrementHangmanLives(serverID):
+    try:
+        lives = hangmanGetLives(serverID)
+        lives = lives - 1
+        
+        basestmt = "update hangman set lives=%s where serverID=%s;"
+        cursor.execute(basestmt, (lives, str(serverID),))
+        conn.commit()
+
+        return True
 
     except:
         return False
@@ -251,4 +275,4 @@ def hangmanDelete(serverID):
 
     except:
         return False
-
+print(decrementHangmanLives(1234))
