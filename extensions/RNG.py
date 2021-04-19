@@ -254,92 +254,54 @@ class RNG(commands.Cog):
             text = link['title'].lower()
             text = hangman_validator(text)  # Formats word/phrase for hangman
             blankstr = ""
-            for ch in text:
+            for ch in text:     # Replaces the letters with dashes in the string shown to players
                 if ch == " ":
                     blankstr += " "
                 else:
                     blankstr += "-"
             hangmanCreate(ctx.guild.id, text, blankstr)
-
-            #with open("hangman.txt", "w") as f:  # Sets up hangman.txt into its starting state
-             #   f.write(text)
-              #  f.write("\n6\n")
-               # for ch in text:
-                #    if ch == " ":
-                 #       f.write(" ")
-                  #  else:
-                   #     f.write("-")
-                #f.write("\n ")
-                #f.close()
             await ctx.send("Reset game.")
-            #with open("hangman.txt", "r") as f:  # Outputs the blank word/phrase
-             #   lines = f.readlines()
-              #  await ctx.send(lines[2])
-               # f.close()
             return
         elif not hgame:  # Requires that the game is 'started' for each server
             await ctx.send("You must \"Restart\" the game first to play.")
             return
         elif letter.isalpha() and len(letter) == 1:       # Checks that the argument is a single letter
             correct = 1
-            #with open("hangman.txt", "r") as f:  # gets the current game state
-             #   lines = f.readlines()
-              #  f.close()
-            #oristr = list(lines[0])
-            #guestr = list(lines[2])
-            #guessedchars = lines[3]
             oristr = hgame[1]
             guestr = hgame[0]
-            guessedchars = hangmanGuessedWrongLetters(ctx.guild.id)
+            guessedchars = hangmanGuessedWrongLetters(ctx.guild.id)     # Grabs used letters from the server
             i = 0
             x = letter.lower()
             if guessedchars.find(x) != -1:
                 await ctx.send("That letter was already guessed.")
                 return
-            #guessedchars += x
             hangmanUpdateWrongGuessed(ctx.guild.id, x)
             while i < len(oristr):      # loops through the original string
                 if oristr[i] == x:
                     correct = 0         # indicates chosen letter is in the string
-                    # guestr[i] = x
-                    guestr = guestr[:i] + x + guestr[i+1:] # sets the char to the same position in the guessed string
+                    guestr = guestr[:i] + x + guestr[i+1:]  # sets the char to the same position in the guessed string
                 i += 1
             if correct == 0:            # outputs and updates text file for correct guesses
                 await ctx.send("Correct!")
-                #outstr = ""
-                #for char in guestr:
-                #    outstr += char
                 await ctx.send(guestr)
                 if hgwon(guestr) == 0:
-                    #os.remove("hangman.txt")
-                    hangmanDelete(ctx.guild.id)
+                    hangmanDelete(ctx.guild.id)     # Deletes the game from the server if it was won
                     await ctx.send("The person was saved, you won!")
                     return
-                #outstr += "\n"
-                #lines[2] = guestr
-                #lines[3] = guessedchars
-                #with open("hangman.txt", "w") as f:
-                #    f.writelines(lines)
-                #    f.close()
                 hangmanUpdate(ctx.guild.id, guestr)
                 return
             else:                       # outputs and updates text file for incorrect guesses
                 await ctx.send("Wrong!")
-                lives = hangmanGetLives(ctx.guild.id)# int(lines[1])
-                # lives -= 1
+                lives = hangmanGetLives(ctx.guild.id)
                 outstr = hgart(lives)    # gets ascii art for the number of lives remaining
                 await ctx.send(outstr)
                 if lives == 0:
-                    #os.remove("hangman.txt")
-                    hangmanDelete(ctx.guild.id)
-                    await ctx.send("The person was hanged, you lost!")
+                    hangmanDelete(ctx.guild.id)     # Deletes the game from the server if it was lost
+                    endstr = "It was \"" + oristr + "\"."
+                    await ctx.send("The person was hung, you lost!")
+                    await ctx.send(endstr)
                     return
-                #lines[1] = str(lives) + "\n"
                 decrementHangmanLives(ctx.guild.id)
-                #lines[3] = guessedchars
-                #with open("hangman.txt", "w") as f:
-                #    f.writelines(lines)
-                #    f.close()
                 return
         else:           # no argument was provided
             await ctx.send("The hangman command needs an argument, \"Restart\" to restart a game, a letter to guess")
