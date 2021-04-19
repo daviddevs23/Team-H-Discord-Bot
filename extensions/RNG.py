@@ -116,6 +116,22 @@ def hgart(liv):
         return "___\n|   0\n| /|\\\n|   |\n| /\\"
 
 
+# Helper method to facilitate transactions
+def helperEcoPoints(serverid, username, amount):
+    createEconomyBoi(serverid, username)
+    if amount >= 0:
+        depositPoints(serverid, username, amount)
+        return True
+    userbal = getPointsBalance(serverid, username)
+    if amount < 0:
+        amount = abs(amount)
+        if amount > userbal:
+            return False
+        else:
+            withdrawPoints(serverid, username, amount)
+            return True
+
+
 # RNG commands test class
 class RNG(commands.Cog):
     def __init__(self, client):
@@ -139,6 +155,13 @@ class RNG(commands.Cog):
         else:
             await ctx.send("The choose command requires an integer argument greater than 1 after it.")
 
+    # Gives the user's balance
+    @commands.command(description="Shows how many points you have in your account.")
+    async def account(self, ctx):
+        createEconomyBoi(ctx.guild.id, ctx.author)
+        x = "You have " + str(getPointsBalance(ctx.guild.id, ctx.author)) + " points."
+        await ctx.send(x)
+
     # Plays rock, paper, scissors with the user
     @commands.command(description="We can play Rock, Paper, Scissors if you choose one of those when asking me")
     async def RPSgame(self, ctx, choice=None):
@@ -157,18 +180,24 @@ class RNG(commands.Cog):
                     await ctx.send("We tied!")
                 elif i == 0:
                     if z == 1:
+                        helperEcoPoints(ctx.guild.id, ctx.author, -10)
                         await ctx.send("Paper beats rock, I win!")
                     elif z == 2:
+                        helperEcoPoints(ctx.guild.id, ctx.author, 10)
                         await ctx.send("Rock beats scissors, you win.")
                 elif i == 1:
                     if z == 0:
+                        helperEcoPoints(ctx.guild.id, ctx.author, 10)
                         await ctx.send("Paper beats rock, you win.")
                     elif z == 2:
+                        helperEcoPoints(ctx.guild.id, ctx.author, -10)
                         await ctx.send("Scissors beats paper, I win!")
                 else:
                     if z == 0:
+                        helperEcoPoints(ctx.guild.id, ctx.author, -10)
                         await ctx.send("Rock beats scissors, I win!")
                     elif z == 1:
+                        helperEcoPoints(ctx.guild.id, ctx.author, 10)
                         await ctx.send("Scissors beats paper, you win.")
                 return
         if z == 5:
@@ -201,6 +230,7 @@ class RNG(commands.Cog):
                 else:
                     tttarr[posx][posy] = "X"
                     if check_tictactoe(tttarr) == 1:
+                        helperEcoPoints(ctx.guild.id, ctx.author, 30)
                         await ctx.send("You win!")
                         tttDeleteGame(ctx.guild.id)
                         for row in range(3):
@@ -219,6 +249,7 @@ class RNG(commands.Cog):
                         compy = randomnumgen(3)
                     tttarr[compx][compy] = "O"
                     if check_tictactoe(tttarr) == 1:
+                        helperEcoPoints(ctx.guild.id, ctx.author, -30)
                         await ctx.send("I win!")
                         tttDeleteGame(ctx.guild.id)
                         for row in range(3):
@@ -286,6 +317,7 @@ class RNG(commands.Cog):
                 await ctx.send(guestr)
                 if hgwon(guestr) == 0:
                     hangmanDelete(ctx.guild.id)     # Deletes the game from the server if it was won
+                    helperEcoPoints(ctx.guild.id, ctx.author, 30)
                     await ctx.send("The person was saved, you won!")
                     return
                 hangmanUpdate(ctx.guild.id, guestr)
@@ -300,6 +332,7 @@ class RNG(commands.Cog):
                     endstr = "It was \"" + oristr + "\"."
                     await ctx.send("The person was hung, you lost!")
                     await ctx.send(endstr)
+                    helperEcoPoints(ctx.guild.id, ctx.author, -30)
                     return
                 decrementHangmanLives(ctx.guild.id)
                 return
