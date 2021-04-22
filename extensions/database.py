@@ -359,14 +359,60 @@ def createEconomyBoi(serverID, username):
     except:
         return False
 
+# Gets the current amount of XP the user has
+def getExperience(serverID, username):
+    try:
+        basestmt = "select balance from experience where username=%s and serverID=%s;"
 
+        cursor.execute(basestmt, (str(username), str(serverID),))
 
-print(withdrawPoints(1234, "Bobby", 5))
+        res = []
 
+        for i in cursor:
+            res.append(i)
 
+        if len(res[0]) == 0:
+            return False
 
+        return res[0][0]
 
+    except:
+        return False
 
+# Creates a new user if they don't already exist
+def createExperienceBoi(serverID, username):
+    try:
+        temp = getExperience(serverID, username)
+        
+        if type(temp) == int:
+            return False
 
+        basestmt = "insert into experience values(%s, %s, %s);"
 
+        cursor.execute(basestmt, (str(serverID), str(username), 0))
+        conn.commit()
 
+        return True
+
+    except:
+        return False
+
+# Increments levels as they level up
+def incrementExperience(serverID, username, amount):
+    try:
+        balance = getExperience(serverID, username)
+
+        if type(balance) != int:
+            return False
+        
+        balance = balance + amount
+
+        basestmt = "update experience set balance=%s where serverID=%s and username=%s;"
+
+        cursor.execute(basestmt, (balance, str(serverID), str(username),))
+        conn.commit()
+
+        return True
+
+    except:
+        return False

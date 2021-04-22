@@ -12,6 +12,7 @@ from extensions.music import Music
 from extensions.roast import Roast
 from extensions.story import Story
 from extensions.converse import Converse
+from extensions.experience import Experience
 
 
 # Command for parcing token.txt
@@ -34,6 +35,7 @@ client.add_cog(Music(client))
 client.add_cog(Roast(client))
 client.add_cog(Story(client))
 client.add_cog(Converse(client))
+client.add_cog(Experience(client))
 
 if __name__ == "__main__":
     client.run(get_token(1))
