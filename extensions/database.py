@@ -27,7 +27,7 @@ def decryptPhrase(message):
 def insertUserContact(username, number):
     try:
         basestmt = "insert into userContact values(%s, %s);"
-        number = encryptPhrase(number)
+        number = encryptPhrase(str(number))
         cursor.execute(basestmt, (username, number))
         
         conn.commit()
