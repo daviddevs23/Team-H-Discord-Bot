@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 import os
 from twilio.rest import Client
-from extensions.database import insertUserContact, getUserContact
+from database import insertUserContact
+from database import getUserContact
 
 
 def tokens(self, index):
@@ -25,12 +26,13 @@ def send_message(number, text):
 
 
 class Text(commands.Cog):
+
     def __init__(self, client):
         self.client = client
 
     @commands.command()
     async def text(self, ctx, member: discord.Member, message=''):
-        number = getUserContact(member)
+        number = getUserContact(str(member))
         if not number:
             ctx.send('Users number is not in database.')
             return
@@ -43,7 +45,7 @@ class Text(commands.Cog):
     @commands.command()
     async def addNumber(self, ctx, number=''):
         user = ctx.author
-        if insertUserContact(user, number):
+        if insertUserContact(str(user),str(number)):
             await ctx.send('Number added successfully!')
         else:
             await ctx.send('An error occured, try again later.')
