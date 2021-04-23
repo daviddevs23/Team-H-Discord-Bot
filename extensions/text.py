@@ -2,8 +2,7 @@ import discord
 from discord.ext import commands
 import os
 from twilio.rest import Client
-from database import insertUserContact
-from database import getUserContact
+from extensions.database import insertUserContact, getUserContact
 
 
 def tokens(self, index):
