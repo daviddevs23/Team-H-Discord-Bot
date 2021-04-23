@@ -30,9 +30,12 @@ class Text(commands.Cog):
 
     @commands.command()
     async def text(self, ctx, member: discord.Member, message=''):
+        member = str(member)
         number = getUserContact(member)
+        print(member, type(member))
+
         if not number:
-            ctx.send('Users number is not in database.')
+            await ctx.send('Users number is not in database.')
             return
 
         open(f'{member}-text.txt')
@@ -43,7 +46,11 @@ class Text(commands.Cog):
     @commands.command()
     async def addNumber(self, ctx, number=''):
         user = ctx.author
-        if insertUserContact(user, number):
+        user = str(user)
+        print(type(number), type(user))
+        temp = insertUserContact(user, number)
+        print(temp)
+        if temp:
             await ctx.send('Number added successfully!')
         else:
             await ctx.send('An error occured, try again later.')
