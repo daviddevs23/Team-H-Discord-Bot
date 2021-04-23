@@ -25,23 +25,30 @@ def send_message(number, text):
          )
 
 
-@commands.command()
-async def text(self, ctx, member: discord.Member, message=''):
-    number = getUserContact(member)
-    if not number:
-        ctx.send('Users number is not in database.')
-        return
-    
-    send_message(number, message)
+class Text(commands.Cog):
+
+    def __init__(self, client):
+        self.client = client
+
+    @commands.command()
+    async def text(self, ctx, member: discord.Member, message=''):
+        number = getUserContact(member)
+        if not number:
+            ctx.send('Users number is not in database.')
+            return
+
+        open(f'{member}-text.txt')
+
+        send_message(number, message)
 
 
-@commands.command()
-async def addNumber(self, ctx, number=''):
-    user = ctx.author
-    if insertUserContact(user, number):
-        await ctx.send('Number added successfully!')
-    else:
-        await ctx.send('An error occured, try again later.')
+    @commands.command()
+    async def addNumber(self, ctx, number=''):
+        user = ctx.author
+        if insertUserContact(user, number):
+            await ctx.send('Number added successfully!')
+        else:
+            await ctx.send('An error occured, try again later.')
 
 
 
