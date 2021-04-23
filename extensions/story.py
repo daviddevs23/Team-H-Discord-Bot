@@ -8,7 +8,7 @@ from discord.ext import commands
 
 
 # Grab access info for Reddit API
-def tokens(self, index):
+def tokens(index):
     with open("token.txt", "r") as f:
         lines = f.readlines()
         return lines[index].strip()
@@ -28,8 +28,8 @@ class Story(commands.Cog):
 
         # initialize praw
         reddit = asyncpraw.Reddit(
-                            client_id=tokens(self, 2),
-                            client_secret=tokens(self, 3),
+                            client_id=tokens(2),
+                            client_secret=tokens(3),
                             user_agent="TeamHBot"
                             )
 
