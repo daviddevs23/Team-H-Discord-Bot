@@ -37,7 +37,7 @@ client.add_cog(Roast(client))
 client.add_cog(Story(client))
 client.add_cog(Converse(client))
 client.add_cog(Experience(client))
-client.add_Cog(Text(client))
+client.add_cog(Text(client))
 
 if __name__ == "__main__":
     client.run(get_token(1))

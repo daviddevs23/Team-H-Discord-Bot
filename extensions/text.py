@@ -2,8 +2,7 @@ import discord
 from discord.ext import commands
 import os
 from twilio.rest import Client
-from database import insertUserContact
-from database import getUserContact
+from extensions.database import insertUserContact, getUserContact
 
 
 def tokens(self, index):
@@ -26,7 +25,6 @@ def send_message(number, text):
 
 
 class Text(commands.Cog):
-
     def __init__(self, client):
         self.client = client
 
