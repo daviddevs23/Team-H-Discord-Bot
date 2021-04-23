@@ -22,7 +22,7 @@ def send(msg):
     client.send(DISCONNECT_MESSAGE)
 
 
-class Discordplays(commands.Cod):
+class Discordplays(commands.Cog):
 
     #Initializer function
     def __init__(self, client):

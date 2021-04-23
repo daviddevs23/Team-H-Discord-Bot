@@ -15,7 +15,7 @@ from extensions.converse import Converse
 from extensions.experience import Experience
 from extensions.text import Text
 from extensions.tutorial import Tutorial
-from extensions.Discordplays import Discordplays
+from extensions.discordplays import Discordplays
 
 
 # Command for parcing token.txt
