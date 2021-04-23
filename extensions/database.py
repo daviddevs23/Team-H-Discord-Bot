@@ -416,3 +416,5 @@ def incrementExperience(serverID, username, amount):
 
     except:
         return False
+
+print(insertUserContact("Bobby Dudoo", 123456789))
