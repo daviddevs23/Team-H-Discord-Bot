@@ -5,26 +5,27 @@ from twilio.rest import Client
 from extensions.database import insertUserContact, getUserContact
 
 
-def tokens(self, index):
+def tokens(index):
     with open("token.txt", "r") as f:
         lines = f.readlines()
         return lines[index].strip()
 
 
 def send_message(number, text):
-    account_sid = 'AC6a2459ffeba9b76a67e3896c08b6e561' #tokens(self, 12)
-    auth_token = 'a93016a605fea7cac23f35f7c64f4a8f' #tokens(self, 13)
+    account_sid = tokens(11)
+    auth_token = tokens(12)
     client = Client(account_sid, auth_token)
 
     client.messages \
         .create(
              body=text,
              from_='+15128723137',
-             to= number
+             to= '+1' + number
          )
 
 
 class Text(commands.Cog):
+
     def __init__(self, client):
         self.client = client
 
@@ -32,13 +33,10 @@ class Text(commands.Cog):
     async def text(self, ctx, member: discord.Member, message=''):
         member = str(member)
         number = getUserContact(member)
-        print(member, type(member))
 
         if not number:
             await ctx.send('Users number is not in database.')
             return
-
-        open(f'{member}-text.txt')
 
         send_message(number, message)
 
@@ -47,9 +45,8 @@ class Text(commands.Cog):
     async def addNumber(self, ctx, number=''):
         user = ctx.author
         user = str(user)
-        print(type(number), type(user))
         temp = insertUserContact(user, number)
-        print(temp)
+
         if temp:
             await ctx.send('Number added successfully!')
         else:
