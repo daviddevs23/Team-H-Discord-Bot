@@ -1,5 +1,7 @@
 Hello, I am TeamHBot! I am a Discord bot with tons of built in functionality to help boost the value of your server. Type ./cont to continue walking through functions, type ./cont end at any time to end tutorial.
 --
+Would you like to store your phone number on our server so that other server members may contact you when your away? You won't be spammed and your number will be encrypted. To store your number, type ./addNumber.
+--
 Awesome! The very first thing you'll need to know is that I operate asynchronously, this means that I only execute commands when prompted by a delimiter (./). This is to reduce energy consumption as well as to avoid accidental activation. Another note is when I am describing a function, I will use the format ./function <required> [optional] when describing functions that take parameters. Some functions won't take parameters at all and will just be written as ./function.The first function we'll call is the ./dad function, type './dad' and I'll tell you a dad joke.
 --
 Neat'o. Another function of the dad bot is to listen for the occurence of "I'm" in any message. This defeates the purpose of being asynchronous, but it is well worth it. Try typing, "I'm hungry". (no need for a delimiter in this case)
