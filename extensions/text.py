@@ -21,7 +21,7 @@ def send_message(number, text):
         .create(
              body=text,
              from_='+15128723137',
-             to= number
+             to= '+1' + number
          )
 
 
