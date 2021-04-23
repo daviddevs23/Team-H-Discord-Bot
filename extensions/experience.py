@@ -27,6 +27,9 @@ class Experience(commands.Cog):
         if ctx.author.id == self.client.user.id:
             return 
 
+        if ctx == None:
+            return
+
         username = ctx.author
         serverID = ctx.guild.id
 
