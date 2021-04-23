@@ -1,43 +1,47 @@
 import discord
 from discord.ext import commands
 import os
-import smtplib
-from smtplib import SMTP
+from twilio.rest import Client
+from database import insertUserContact
+from database import getUserContact
 
 
-providers = [
-                'att-@txt.att.net',
-                'tmobile-@tmomail.net',
-                'verizon-@vtext.com',
-                'sprint-@messaging.sprintpcs.com',
-                'uscellular-@email.uscc.net'
-            ]
+def tokens(self, index):
+    with open("token.txt", "r") as f:
+        lines = f.readlines()
+        return lines[index].strip()
 
-def send_message(user_provider, number, message):
-    for prov in providers:
-        if user_provider.lower() in prov:
-            provider_found = True
-            split_provider = prov.split('-')
-            extention = split_provider[1]
-            send = str(number) + extention
 
-    if not provider_found:
-        return 'Provider Not Found'
+def send_message(number, text):
+    account_sid = 'AC6a2459ffeba9b76a67e3896c08b6e561' #tokens(self, 12)
+    auth_token = 'a93016a605fea7cac23f35f7c64f4a8f' #tokens(self, 13)
+    client = Client(account_sid, auth_token)
 
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.starttls()
-    server.login( 'teamhsmsbot@gmail.com', 'teamH2021')
-    server.sendmail( 'User', send, message)
+    client.messages \
+        .create(
+             body=text,
+             from_='+15128723137',
+             to= number
+         )
 
-    return f'Message sent to {number}'
 
 @commands.command()
-async def text(self, ctx, user_provider='', number='', message=''):
-    if user_provider=='' or number == '' or message=='':
-        await ctx.send('To use text, include the users provider, number, and message') 
-    else:
-        await ctx.send(send_message(user_provider, number, message))
+async def text(self, ctx, member: discord.Member, message=''):
+    number = getUserContact(member)
+    if not number:
+        ctx.send('Users number is not in database.')
+        return
+    
+    send_message(number, message)
 
+
+@commands.command()
+async def addNumber(self, ctx, number=''):
+    user = ctx.author
+    if insertUserContact(user, number):
+        await ctx.send('Number added successfully!')
+    else:
+        await ctx.send('An error occured, try again later.')
 
 
 
