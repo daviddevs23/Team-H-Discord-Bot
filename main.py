@@ -15,6 +15,7 @@ from extensions.converse import Converse
 from extensions.experience import Experience
 from extensions.text import Text
 from extensions.tutorial import Tutorial
+from extensions.Discordplays import Discordplays
 
 
 # Command for parcing token.txt
@@ -40,6 +41,7 @@ client.add_cog(Converse(client))
 client.add_cog(Experience(client))
 client.add_cog(Text(client))
 client.add_cog(Tutorial(client))
+client.add_cog(Discordplays(client))
 
 if __name__ == "__main__":
     client.run(get_token(1))
