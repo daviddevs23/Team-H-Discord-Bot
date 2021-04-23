@@ -28,8 +28,8 @@ class Story(commands.Cog):
 
         # initialize praw
         reddit = asyncpraw.Reddit(
-                            client_id=tokens(2),
-                            client_secret=tokens(3),
+                            client_id=tokens(4),
+                            client_secret=tokens(5),
                             user_agent="TeamHBot"
                             )
 
